@@ -2,7 +2,7 @@
 
 :information_source: *Note: This summarizer only works with Frank OCBC Account as of now*
 
-:warning: *Please use this summarizer with caution! The script is intended to be used **locally and privately**. I will not be held responsible for the leaking any private information into the public. [Why is this safe?](#Why-is-this-safe?)*
+:warning: *Please use this summarizer with caution! The script is intended to be used **locally and privately**. I will not be held responsible for the leaking any private information into the public. [Why is this safe?](#why-is-this-safe)*
 
 ## Why is this repo created?
 I found a hard time tracking how much money do I get or spend in a certain amount of time and since I receive my banking e-statements every month, I thought to make a summary and visualisation from all statements that I got. 
