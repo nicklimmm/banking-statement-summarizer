@@ -2,7 +2,7 @@
 
 :information_source: *Note: This summarizer only works with Frank OCBC Account as of now*
 
-:warning: *Please use this summarizer with caution! The script is intended to be used **locally and privately**. I will not be held responsible for the leaking any private information into the public. [Why is this safe?](#why-is-this-safe)*
+:warning: *Please use this summarizer with caution! The script is intended to be used **personally**. I will not be held responsible for the leakage any private information into the public.*
 
 ## Why is this repo created?
 I found a hard time tracking how much money do I get or spend in a certain amount of time and since I receive my banking e-statements every month, I thought to make a summary and visualisation from all statements that I got. 
@@ -21,14 +21,14 @@ Make sure you have Python 3 installed in your machine. If you haven't, you can d
 - **MacOs and Linux**  *(Detailed steps coming soon... You can install according to your OS, if stuck, you could search for help in the internet)*
 
 ## How can I use this?
-1. Open the script folder, then move all your PDF e-statements into it.
+1. Open the script folder, then move all your PDF e-Statements into it (Make sure to not rename the original e-Statements).
 2. On that folder, type *cmd* in the location bar of Windows Explorer and press Enter. The command prompt will be opened.
 3. Type ```python create_summary.py```, this command will run the summarizer script.
-4. In order to have access on your PDF e-statement, the script will ask for the password (No worries! It is safe! The password will be hidden when you type the password).
-5. Wait for a few seconds, then a csv file and an Excel file will be created in the same folder that contains the summary and the visualization of your cashflow.
+4. In order to have access on your PDF e-statement, the script will ask for the password ([Why is this safe?](#why-is-this-safe?)).
+5. Wait for a few seconds, then an Excel file will be created in the same folder that contains the summary and the visualization of your cashflow.
 
 ## Why is this safe?
 - When the script is asking for your password, the password will be hidden when you type the password.
 - The script does not save your passwords in any way.
-- The csv and Excel file created only contains the cashflow for each month.
-- After unlocking your PDF e-statements, it will be locked again.
+- The Excel file created only contains the cashflow.
+- After unlocking your PDF e-Statements, it will be locked again.
