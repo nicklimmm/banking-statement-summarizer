@@ -35,33 +35,38 @@ def extract_data_from_pdf(cwd=os.getcwd()):
                     'Wrong password! Please rerun the script again to create the summary.')
                 exit()
 
-            date_created = pdf_obj.getDocumentInfo()['/CreationDate']
-            year = int(date_created[2:6])
-            # the statement is created 1 month later, so we decrement by 1 to get the actual data
-            month = int(date_created[6:8]) - 1
+            try:
+                date_created = pdf_obj.getDocumentInfo()['/CreationDate']
+                year = int(date_created[2:6])
+                # the statement is created 1 month later, so we decrement by 1 to get the actual data
+                month = int(date_created[6:8]) - 1
 
-            # error handling when the e-statement is received on January (which is e-statement for December)
-            if month == 0:
-                month = 12
+                # error handling when the e-statement is received on January (which is e-statement for December)
+                if month == 0:
+                    month = 12
 
-            # to handle different number of pages in each file, and the summary lies in the back pages of the file
-            num_pages = pdf_obj.getNumPages()
-            if num_pages == 3:
-                page_obj = pdf_obj.getPage(num_pages - 3)
-            else:
-                page_obj = pdf_obj.getPage(num_pages - 2)
+                # to handle different number of pages in each file, and the summary lies in the back pages of the file
+                num_pages = pdf_obj.getNumPages()
+                if num_pages == 3:
+                    page_obj = pdf_obj.getPage(num_pages - 3)
+                else:
+                    page_obj = pdf_obj.getPage(num_pages - 2)
 
-            # using regex to find the necessary details and extract those to variables
-            text = page_obj.extractText().encode('ascii').decode('ascii')
-            pattern = r'[0-9,\.]+\s+[0-9,\.]+\s+[0-9,\.]+\s+[0-9,\.]+[0-9]'
-            result = re.findall(pattern, text)
-            inflow, outflow, interest, avg_balance = list(
-                map(float, result[-1].replace(',', '').split()))
-            netflow = round(float(inflow) - float(outflow), 2)
+                # using regex to find the necessary details and extract those to variables
+                text = page_obj.extractText().encode('ascii').decode('ascii')
+                pattern = r'[0-9,\.]+\s+[0-9,\.]+\s+[0-9,\.]+\s+[0-9,\.]+[0-9]'
+                result = re.findall(pattern, text)
+                inflow, outflow, interest, avg_balance = list(
+                    map(float, result[-1].replace(',', '').split()))
+                netflow = round(float(inflow) - float(outflow), 2)
 
-            if year not in data_dict:
-                data_dict[year] = []
-            data_dict[year].append((month, inflow, outflow, netflow))
+                if year not in data_dict:
+                    data_dict[year] = []
+                data_dict[year].append((month, inflow, outflow, netflow))
+            except:
+                print('Something went wrong... Please rerun the script or report the issue in GitHub.')
+                os.remove(temp_dir)
+                exit()
 
     # to prevent unauthorized access the decrypted pdf
     os.remove(temp_dir)
