@@ -12,7 +12,7 @@ import os
 def extract_data_from_pdf(cwd=os.getcwd()):
     # when typing the password, it will not be shown in the terminal
     password = getpass('Enter password: ')
-    temp_dir = cwd + '/temp.pdf'
+    temp_dir = os.path.join(cwd, 'temp.pdf')
 
     # to store the data based on the year (key = year, value = [month, inflow, outflow, netflow, interest, avg_balance])
     data_dict = dict()
@@ -20,7 +20,7 @@ def extract_data_from_pdf(cwd=os.getcwd()):
     for file_name in os.listdir(cwd):
         # to search for FRANK OCBC e-Statements in the same folder
         if file_name.startswith("FRANK") and file_name.endswith(".pdf"):
-            file_dir = cwd + '/' + file_name
+            file_dir = os.path.join(cwd, file_name)
 
             try:
                 '''since PyPDF2 cannot open the encrypted file, we use pikepdf
@@ -31,8 +31,11 @@ def extract_data_from_pdf(cwd=os.getcwd()):
                 temp_file.save(temp_dir)
                 pdf_obj = PdfFileReader(temp_dir)
             except PasswordError:
-                print(
-                    'Wrong password! Please rerun the script again to create the summary.')
+                print('Wrong password! Please rerun the script again to create the summary.')
+                exit()
+            except:
+                print('Whoops. Something went wrong, please rerun the script again. In case the error still happens, \
+                please report this issue in https://github.com/nicklimmm/banking-statement-summarizer/issues!')
                 exit()
 
             try:
@@ -57,7 +60,7 @@ def extract_data_from_pdf(cwd=os.getcwd()):
                 text = page_obj.extractText().encode('ascii').decode('ascii')
                 pattern = r'[0-9,\.]+\s+[0-9,\.]+\s+[0-9,\.]+\s+[0-9,\.]+[0-9]'
                 result = re.findall(pattern, text)
-                inflow, outflow, interest, avg_balance = list(
+                inflow, outflow, _, _ = list(
                     map(float, result[-1].replace(',', '').split()))
                 netflow = round(float(inflow) - float(outflow), 2)
 
@@ -158,7 +161,7 @@ def insert_data_to_excel(worksheet=None, data_dict=dict()):
         worksheet.add_chart(chart, f'G{start_range - 1}')
 
         # padding for filling the missing months
-        for row in range(12 - num_of_months):
+        for _ in range(12 - num_of_months):
             worksheet.append([])
             next_row += 1
 
@@ -170,7 +173,7 @@ def insert_data_to_excel(worksheet=None, data_dict=dict()):
 if __name__ == '__main__':
     cwd = os.getcwd()   # cwd = current working directory
 
-    excel_dir = cwd + '/summary_excel.xlsx'
+    excel_dir = os.path.join(cwd, 'summary_excel.xlsx')
 
     data_dict = extract_data_from_pdf(cwd=cwd)
 
