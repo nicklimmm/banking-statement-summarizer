@@ -3,7 +3,7 @@ from openpyxl import Workbook
 from openpyxl.styles import colors, Font, Color, Alignment, NamedStyle, PatternFill
 from openpyxl.chart import Reference, ScatterChart, Series
 from PyPDF2 import PdfFileReader
-from pikepdf import Pdf
+from pikepdf import Pdf, PasswordError
 
 import re
 import os
@@ -12,7 +12,7 @@ import os
 def extract_data_from_pdf(cwd=os.getcwd()):
     # when typing the password, it will not be shown in the terminal
     password = getpass('Enter password: ')
-    temp_dir = cwd + '\\temp.pdf'
+    temp_dir = cwd + '/temp.pdf'
 
     # to store the data based on the year (key = year, value = [month, inflow, outflow, netflow, interest, avg_balance])
     data_dict = dict()
@@ -20,7 +20,7 @@ def extract_data_from_pdf(cwd=os.getcwd()):
     for file_name in os.listdir(cwd):
         # to search for FRANK OCBC e-Statements in the same folder
         if file_name.startswith("FRANK") and file_name.endswith(".pdf"):
-            file_dir = cwd + '\\' + file_name
+            file_dir = cwd + '/' + file_name
 
             try:
                 '''since PyPDF2 cannot open the encrypted file, we use pikepdf
@@ -30,7 +30,7 @@ def extract_data_from_pdf(cwd=os.getcwd()):
                 temp_file = Pdf.open(file_dir, password=password)
                 temp_file.save(temp_dir)
                 pdf_obj = PdfFileReader(temp_dir)
-            except:
+            except PasswordError:
                 print(
                     'Wrong password! Please rerun the script again to create the summary.')
                 exit()
@@ -43,6 +43,7 @@ def extract_data_from_pdf(cwd=os.getcwd()):
 
                 # error handling when the e-statement is received on January (which is e-statement for December)
                 if month == 0:
+                    year -= 1
                     month = 12
 
                 # to handle different number of pages in each file, and the summary lies in the back pages of the file
@@ -169,7 +170,7 @@ def insert_data_to_excel(worksheet=None, data_dict=dict()):
 if __name__ == '__main__':
     cwd = os.getcwd()   # cwd = current working directory
 
-    excel_dir = cwd + '\\summary_excel.xlsx'
+    excel_dir = cwd + '/summary_excel.xlsx'
 
     data_dict = extract_data_from_pdf(cwd=cwd)
 
